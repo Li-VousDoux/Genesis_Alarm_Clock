@@ -1,0 +1,261 @@
+﻿public class BedTimeClock
+{ 
+  private int hour;
+ private int minute;
+ public Time(int initHour, int initMinute)
+  { 
+   if (1 <= hour && hour <= 12) 
+    {
+      hour = initHour; 
+    }
+   else if (hour == 0) 
+    { 
+      hour = 12; 
+    }
+   if (0 <= minute && minute <= 59 ) 
+    { 
+      minute = initMinute;
+    } 
+  } 
+  
+  public void addOneMinute() 
+  { 
+   minute++;
+   if (minute == 59) 
+   {
+     incrementHour();
+     minute = 0; 
+   }  
+  }
+
+
+  public void incrementHour() 
+  { 
+   hour++; 
+   if (hour > 12) 
+   { 
+    hour = 1;
+   } 
+  }
+
+
+  public void incrementMinute()
+ {
+  minute++; 
+  if (minute == 59) 
+  { 
+   minute = 0; 
+  } 
+ }
+
+
+ public int getHour() 
+ { 
+  if (hour >= 1 && hour <= 12) 
+  { 
+  }
+  return hour; 
+ }
+
+
+ public int getMinute() 
+ { 
+  if (minute >=0 && minute <= 59) 
+  { 
+  } 
+  return minute; 
+ } 
+
+
+ public boolean equals(Time time) 
+ {
+  if (hour == hour && minute == minute) 
+  { 
+   return true; 
+  } 
+   else 
+  { 
+   return false; 
+  } 
+ } 
+}
+
+
+
+
+
+public class BedTimeClockAlarm 
+{
+ private static final int SNOOZE_DURATION_IN_MINUTES = 2; 
+ private Time CurrentTime; 
+ private Time BedAlarmTime; 
+ private Time SnoozeTime; 
+ private Display display; 
+ private ModeManager modeMgr; 
+ private Alarm alarm; 
+
+
+public TimeManager()
+  {
+   CurrentTime = new Time(12,0); 
+   BedAlarmTime = new Time(12,0); 
+   snoozeTime = new Time(12,0); 
+  } 
+
+ public void setActiveAlarmClock (Display newDisplay) 
+  { 
+   display = newDisplay; 
+   showCurrentTime(); 
+ } 
+  // Not implemented.
+  public void setModeManager(ModeManager newModeMgr) 
+ { 
+  modeMgr = newModeMgr; 
+ } 
+
+ public void setBedTimeAlarm(Alarm newBAlarm) 
+ { 
+  alarm = newBAlarm; 
+ } 
+ public void incrementCurrentMinute() 
+ {
+  CurrentTime.addOneMinute();
+  Mode mode = modeMgr.getMode(); 
+  if (mode == mode.ALARM_ON || mode == mode.ALARM_OFF || mode == mode.SET_TIME) 
+   { 
+    updateDisplay(); 
+   } 
+  if (mode == mode.ALARM_ON) 
+  { 
+  if (CurrentTime.equals(alarmTime) || CurrentTime.equals(snoozeTime)) 
+    { 
+     Alert(); 
+    }
+  }
+}
+
+public void incrementCurrentHour() 
+{ 
+ CurrentTime.incrementHour(); 
+ Mode mode = modeMgr.getMode(); 
+  if (mode == mode.ALARM_ON || mode == mode.ALARM_OFF || mode == mode.SET_TIME)
+   {
+    updateDisplay(); } if (mode == mode.ALARM_ON) 
+     { 
+     if (CurrentTime.equals(BedAlarmTime) || CurrentTime.equals(snoozeTime)) 
+      { 
+        Alert(); 
+      }
+     } 
+   }
+  }
+
+
+public void incrementAlarmMinute() 
+{
+BedAlarmTime.incrementMinute(); 
+Mode mode = modeMgr.getMode(); 
+if (mode == mode.SET_ALARM) 
+ { 
+  updateDisplay(); 
+ } 
+if (mode == mode.ALARM_ON) 
+ { 
+  if (CurrentTime.equals(BedAlarmTime))
+  {
+    Alert(); 
+  }
+ } 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+public void incrementAlarmHour() 
+{
+ BedAlarmTime.incrementHour(); 
+ Mode mode = modeMgr.getMode();
+ if (mode == mode.SET_ALARM) 
+ {
+  updateDisplay();
+ }
+ if (mode == mode.ALARM_ON)
+ { 
+  if (CurrentTime.equals(BedAlarmTime)) 
+  { 
+   Alert(); 
+  } 
+ } 
+}
+
+
+
+public void Snooze()
+{ 
+ while (alarm.isOn()) 
+ { 
+  alarm.off(); 
+  int hour = CurrentTime.getHour(); 
+  int minute = CurrentTime.getMinute(); 
+  minute += SNOOZE_DURATION_IN_MINUTES; 
+  if (minute > 59) 
+   { 
+     minute -= 60; ++hour; 
+   }
+   SnoozeTime = new Time(hour, minute); 
+  } 
+ }
+
+
+
+public void showCurrentTime()
+{ 
+display.showHour(CurrentTime.getHour());
+display.showMinute(CurrentTime.getMinute()); 
+}
+
+
+
+
+
+public void DisplayAlarmClock() 
+{ 
+display.showHour(BedAlarmTime.getHour()); 
+display.showMinute(BedAlarmTime.getMinute()); 
+}
+
+
+
+
+
+private void updateDisplay() 
+{ 
+Mode mode = modeMgr.getMode(); 
+if (mode == mode.SET_TIME || mode == mode.ALARM_ON || mode == mode.ALARM_OFF)
+ {
+  showCurrentTime();
+ }
+Else
+ { 
+  showBedAlarmTime(); 
+ } 
+} 
+
+private void Alert() 
+{
+Mode mode = modeMgr.getMode(); if (mode == mode.ALARM_ON &&
+currentTime.equals(BedAlarmTime) || currentTime.equals(snoozeTime))
+ {
+  alarm.on();
+ } 
+} 
+}
